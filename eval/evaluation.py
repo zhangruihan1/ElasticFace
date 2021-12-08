@@ -4,7 +4,7 @@ import os
 #import cv2
 import sys
 import torch
-sys.path.append('/home/fboutros/ElasticFace')
+sys.path.append('ElasticFace')
 
 from utils.utils_callbacks import CallBackVerification
 from utils.utils_logging import init_logging
@@ -22,14 +22,16 @@ if __name__ == "__main__":
     weights=os.listdir(output_folder)
     for w in weights:
         if "backbone" in w:
+            print(w)
             if cfg.network == "iresnet100":
                 backbone = iresnet100(num_features=cfg.embedding_size).to(f"cuda:{gpu_id}")
             elif cfg.network == "iresnet50":
-                backbone = iresnet50(num_classes=cfg.embedding_size).to(f"cuda:{gpu_id}")
+                backbone = iresnet50(num_features=cfg.embedding_size).to(f"cuda:{gpu_id}")
             else:
                 backbone = None
                 exit()
             backbone.load_state_dict(torch.load(os.path.join(output_folder,w)))
             model = torch.nn.DataParallel(backbone, device_ids=[gpu_id])
             callback_verification(int(w.split("backbone")[0]),model)
+            print('done')
 
