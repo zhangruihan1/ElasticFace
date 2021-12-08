@@ -32,6 +32,9 @@ class CallBackVerification(object):
             logging.info(
                 '[%s][%d]Accuracy-Highest: %1.5f' % (self.ver_name_list[i], global_step, self.highest_acc_list[i]))
             results.append(acc2)
+            print(i, ' ok')
+            self.ver_list[i].append(embeddings_list)
+            torch.save(self.ver_list[i], f'embeddings_{i}.pt')
 
     def init_dataset(self, val_targets, data_dir, image_size):
         for name in val_targets:
